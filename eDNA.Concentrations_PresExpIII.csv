@@ -1,0 +1,355 @@
+Plate,Well,Buffer,Temperature,Time,Extraction,QS_conc (pg/mL),Technical_rep,PCR_rep
+Pres Exp 3_Plate 2,H1,Ethanol,-20,1,Kit,1395.48,1,1
+Pres Exp 3_Plate 2,H2,Ethanol,-20,1,Kit,1908.28,1,2
+Pres Exp 3_Plate 2,H3,Ethanol,-20,1,Kit,1241.16,1,3
+Pres Exp 3_Plate 2,H4,Ethanol,-20,1,Kit,1423.02,1,4
+Pres Exp 3_Plate 2,H5,Ethanol,-20,1,Kit,1485.65,1,5
+Pres Exp 3_Plate 2,H6,Ethanol,-20,1,Kit,1214.49,1,6
+Pres Exp 3_Plate 2,G8,Ethanol,-20,1,Kit,1342.37,2,1
+Pres Exp 3_Plate 2,G9,Ethanol,-20,1,Kit,1475.12,2,2
+Pres Exp 3_Plate 2,G10,Ethanol,-20,1,Kit,1197.91,2,3
+Pres Exp 3_Plate 2,H7,Ethanol,-20,1,Kit,1374.25,2,4
+Pres Exp 3_Plate 2,H8,Ethanol,-20,1,Kit,1764.49,2,5
+Pres Exp 3_Plate 2,H9,Ethanol,-20,1,Kit,1333.57,2,6
+Pres Exp 3_Plate 2,C10,Ethanol,-20,1,Kit,2139.38,3,1
+Pres Exp 3_Plate 2,C11,Ethanol,-20,1,Kit,1776.42,3,2
+Pres Exp 3_Plate 2,C12,Ethanol,-20,1,Kit,1781.92,3,3
+Pres Exp 3_Plate 2,D10,Ethanol,-20,1,Kit,2272.62,3,4
+Pres Exp 3_Plate 2,D11,Ethanol,-20,1,Kit,2039.01,3,5
+Pres Exp 3_Plate 2,D12,Ethanol,-20,1,Kit,2247.59,3,6
+Pres Exp 3_Plate 2,B11,Ethanol,-20,1,Kit,839.58,4,1
+Pres Exp 3_Plate 2,B12,Ethanol,-20,1,Kit,566.99,4,2
+Pres Exp 3_Plate 2,E10,Ethanol,-20,1,Kit,1315.13,4,3
+Pres Exp 3_Plate 2,E11,Ethanol,-20,1,Kit,1122.16,4,4
+Pres Exp 3_Plate 2,E12,Ethanol,-20,1,Kit,862.84,4,5
+Pres Exp 3_Plate 2,F11,Ethanol,-20,1,Kit,916.03,4,6
+Pres Exp 3_Plate 2,F12,Ethanol,-20,1,Kit,1189.68,5,1
+Pres Exp 3_Plate 2,G11,Ethanol,-20,1,Kit,1461.21,5,2
+Pres Exp 3_Plate 2,G12,Ethanol,-20,1,Kit,1779.72,5,3
+Pres Exp 3_Plate 3,A4,Ethanol,-20,1,Kit,1140.93,5,4
+Pres Exp 3_Plate 3,A5,Ethanol,-20,1,Kit,668.03,5,5
+Pres Exp 3_Plate 3,A6,Ethanol,-20,1,Kit,1646.48,5,6
+Pres Exp 3_Plate 2,C4,Ethanol,4,1,Kit,1405.72,1,1
+Pres Exp 3_Plate 2,C5,Ethanol,4,1,Kit,2356.57,1,2
+Pres Exp 3_Plate 2,C6,Ethanol,4,1,Kit,2151.51,1,3
+Pres Exp 3_Plate 2,C7,Ethanol,4,1,Kit,2318.85,1,4
+Pres Exp 3_Plate 2,C8,Ethanol,4,1,Kit,2105.23,1,5
+Pres Exp 3_Plate 2,C9,Ethanol,4,1,Kit,2906.33,1,6
+Pres Exp 3_Plate 2,D4,Ethanol,4,1,Kit,847.84,2,1
+Pres Exp 3_Plate 2,D5,Ethanol,4,1,Kit,1401.64,2,2
+Pres Exp 3_Plate 2,D6,Ethanol,4,1,Kit,1181.05,2,3
+Pres Exp 3_Plate 2,D7,Ethanol,4,1,Kit,1123.53,2,4
+Pres Exp 3_Plate 2,D8,Ethanol,4,1,Kit,1060.25,2,5
+Pres Exp 3_Plate 2,D9,Ethanol,4,1,Kit,1541.19,2,6
+Pres Exp 3_Plate 2,E4,Ethanol,4,1,Kit,501.56,3,1
+Pres Exp 3_Plate 2,E5,Ethanol,4,1,Kit,994.28,3,2
+Pres Exp 3_Plate 2,E6,Ethanol,4,1,Kit,721.94,3,3
+Pres Exp 3_Plate 2,E7,Ethanol,4,1,Kit,977.78,3,4
+Pres Exp 3_Plate 2,E8,Ethanol,4,1,Kit,892.06,3,5
+Pres Exp 3_Plate 2,E9,Ethanol,4,1,Kit,756.96,3,6
+Pres Exp 3_Plate 2,F4,Ethanol,4,1,Kit,796.58,4,1
+Pres Exp 3_Plate 2,F5,Ethanol,4,1,Kit,1396.16,4,2
+Pres Exp 3_Plate 2,F6,Ethanol,4,1,Kit,1245.27,4,3
+Pres Exp 3_Plate 2,F7,Ethanol,4,1,Kit,1448.48,4,4
+Pres Exp 3_Plate 2,F8,Ethanol,4,1,Kit,813.36,4,5
+Pres Exp 3_Plate 2,F9,Ethanol,4,1,Kit,1118.19,4,6
+Pres Exp 3_Plate 2,G2,Ethanol,4,1,Kit,1241.49,5,1
+Pres Exp 3_Plate 2,G3,Ethanol,4,1,Kit,1134.19,5,2
+Pres Exp 3_Plate 2,G4,Ethanol,4,1,Kit,1250.05,5,3
+Pres Exp 3_Plate 2,G5,Ethanol,4,1,Kit,1300.8,5,4
+Pres Exp 3_Plate 2,G6,Ethanol,4,1,Kit,1617.11,5,5
+Pres Exp 3_Plate 2,G7,Ethanol,4,1,Kit,1465.4,5,6
+EMM Makeups & PresExp III,B8,Ethanol,RT,1,Kit,1737.07,1,1
+EMM Makeups & PresExp III,B9,Ethanol,RT,1,Kit,2368.92,1,2
+EMM Makeups & PresExp III,B10,Ethanol,RT,1,Kit,1398.86,1,3
+EMM Makeups & PresExp III,B11,Ethanol,RT,1,Kit,2623.34,1,4
+EMM Makeups & PresExp III,B12,Ethanol,RT,1,Kit,1806.49,1,5
+EMM Makeups & PresExp III,F11,Ethanol,RT,1,Kit,2102.43,1,6
+EMM Makeups & PresExp III,H7,Ethanol,RT,1,Kit,6111.94,3,1
+EMM Makeups & PresExp III,H8,Ethanol,RT,1,Kit,8803.43,3,2
+EMM Makeups & PresExp III,H9,Ethanol,RT,1,Kit,8549.73,3,3
+Pres Exp 3_Plate 2,A4,Ethanol,RT,1,Kit,2557.36,3,4
+Pres Exp 3_Plate 2,A5,Ethanol,RT,1,Kit,2709.58,3,5
+Pres Exp 3_Plate 2,A6,Ethanol,RT,1,Kit,2668.48,3,6
+Pres Exp 3_Plate 2,A7,Ethanol,RT,1,Kit,1662.98,4,1
+Pres Exp 3_Plate 2,A8,Ethanol,RT,1,Kit,2160.88,4,2
+Pres Exp 3_Plate 2,A9,Ethanol,RT,1,Kit,2170.54,4,3
+Pres Exp 3_Plate 2,A10,Ethanol,RT,1,Kit,1818.9,4,4
+Pres Exp 3_Plate 2,A11,Ethanol,RT,1,Kit,1903.61,4,5
+Pres Exp 3_Plate 2,A12,Ethanol,RT,1,Kit,1652.81,4,6
+Pres Exp 3_Plate 2,B4,Ethanol,RT,1,Kit,499.25,5,1
+Pres Exp 3_Plate 2,B5,Ethanol,RT,1,Kit,1002.16,5,2
+Pres Exp 3_Plate 2,B6,Ethanol,RT,1,Kit,650.48,5,3
+Pres Exp 3_Plate 2,B8,Ethanol,RT,1,Kit,844.02,5,4
+Pres Exp 3_Plate 2,B9,Ethanol,RT,1,Kit,1208.8,5,5
+Pres Exp 3_Plate 2,B10,Ethanol,RT,1,Kit,801.18,5,6
+Pres Exp 3_Plate 3,A7,Frozen,-20,1,Kit,1194.12,1,1
+Pres Exp 3_Plate 3,A8,Frozen,-20,1,Kit,1633.69,1,2
+Pres Exp 3_Plate 3,A9,Frozen,-20,1,Kit,1985.13,1,3
+Pres Exp 3_Plate 3,A10,Frozen,-20,1,Kit,1487.71,1,4
+Pres Exp 3_Plate 3,A11,Frozen,-20,1,Kit,1835.37,1,5
+Pres Exp 3_Plate 3,A12,Frozen,-20,1,Kit,1351.38,1,6
+Pres Exp 3_Plate 3,B4,Frozen,-20,1,Kit,2632.67,2,1
+Pres Exp 3_Plate 3,B5,Frozen,-20,1,Kit,3214.25,2,2
+Pres Exp 3_Plate 3,B6,Frozen,-20,1,Kit,2503.38,2,3
+Pres Exp 3_Plate 3,B8,Frozen,-20,1,Kit,2398.72,2,4
+Pres Exp 3_Plate 3,B9,Frozen,-20,1,Kit,2664.15,2,5
+Pres Exp 3_Plate 3,B10,Frozen,-20,1,Kit,3303.51,2,6
+Pres Exp 3_Plate 3,C4,Frozen,-20,1,Kit,1510.45,3,1
+Pres Exp 3_Plate 3,C5,Frozen,-20,1,Kit,1482.57,3,2
+Pres Exp 3_Plate 3,C6,Frozen,-20,1,Kit,1383.79,3,3
+Pres Exp 3_Plate 3,C7,Frozen,-20,1,Kit,1632.83,3,4
+Pres Exp 3_Plate 3,C8,Frozen,-20,1,Kit,1536.49,3,5
+Pres Exp 3_Plate 3,C9,Frozen,-20,1,Kit,1686.03,3,6
+Pres Exp 3_Plate 3,D4,Frozen,-20,1,Kit,1358.48,4,1
+Pres Exp 3_Plate 3,D5,Frozen,-20,1,Kit,1302.24,4,2
+Pres Exp 3_Plate 3,D6,Frozen,-20,1,Kit,1496.04,4,3
+Pres Exp 3_Plate 3,D7,Frozen,-20,1,Kit,2194.95,4,4
+Pres Exp 3_Plate 3,D8,Frozen,-20,1,Kit,2047.09,4,5
+Pres Exp 3_Plate 3,D9,Frozen,-20,1,Kit,2314.12,4,6
+Pres Exp 3_Plate 3,E4,Frozen,-20,1,Kit,1983.55,5,1
+Pres Exp 3_Plate 3,E5,Frozen,-20,1,Kit,2039.74,5,2
+Pres Exp 3_Plate 3,E6,Frozen,-20,1,Kit,2006.58,5,3
+Pres Exp 3_Plate 3,E7,Frozen,-20,1,Kit,1630.52,5,4
+Pres Exp 3_Plate 3,E8,Frozen,-20,1,Kit,2189.75,5,5
+Pres Exp 3_Plate 3,E9,Frozen,-20,1,Kit,2448.12,5,6
+Pres Exp 3_Plate 4,D4,Ethanol,-20,2,Kit,1801.52,1,1
+Pres Exp 3_Plate 4,D5,Ethanol,-20,2,Kit,2129.26,1,2
+Pres Exp 3_Plate 4,D6,Ethanol,-20,2,Kit,2385.29,1,3
+Pres Exp 3_Plate 4,D7,Ethanol,-20,2,Kit,2425.93,1,4
+Pres Exp 3_Plate 4,D8,Ethanol,-20,2,Kit,2096.6,1,5
+Pres Exp 3_Plate 4,D9,Ethanol,-20,2,Kit,3095.52,1,6
+Pres Exp 3_Plate 4,E4,Ethanol,-20,2,Kit,1080.39,2,1
+Pres Exp 3_Plate 4,E5,Ethanol,-20,2,Kit,1348.72,2,2
+Pres Exp 3_Plate 4,E6,Ethanol,-20,2,Kit,2212.36,2,3
+Pres Exp 3_Plate 4,E7,Ethanol,-20,2,Kit,1792.79,2,4
+Pres Exp 3_Plate 4,E8,Ethanol,-20,2,Kit,1376.63,2,5
+Pres Exp 3_Plate 4,E9,Ethanol,-20,2,Kit,1363.7,2,6
+Pres Exp 3_Plate 4,F4,Ethanol,-20,2,Kit,1771.51,3,1
+Pres Exp 3_Plate 4,F5,Ethanol,-20,2,Kit,2322.01,3,2
+Pres Exp 3_Plate 4,F6,Ethanol,-20,2,Kit,1914.36,3,3
+Pres Exp 3_Plate 4,F7,Ethanol,-20,2,Kit,2466.14,3,4
+Pres Exp 3_Plate 4,F8,Ethanol,-20,2,Kit,2400.63,3,5
+Pres Exp 3_Plate 4,F9,Ethanol,-20,2,Kit,2086.23,3,6
+Pres Exp 3_Plate 4,G2,Ethanol,-20,2,Kit,2262.27,4,1
+Pres Exp 3_Plate 4,G3,Ethanol,-20,2,Kit,1641.43,4,2
+Pres Exp 3_Plate 4,G4,Ethanol,-20,2,Kit,1538.02,4,3
+Pres Exp 3_Plate 4,G5,Ethanol,-20,2,Kit,1847.15,4,4
+Pres Exp 3_Plate 4,G6,Ethanol,-20,2,Kit,1991.71,4,5
+Pres Exp 3_Plate 4,G7,Ethanol,-20,2,Kit,2371.47,4,6
+Pres Exp 3_Plate 4,H1,Ethanol,-20,2,Kit,1188.01,5,1
+Pres Exp 3_Plate 4,H2,Ethanol,-20,2,Kit,1301.3,5,2
+Pres Exp 3_Plate 4,H3,Ethanol,-20,2,Kit,1387.01,5,3
+Pres Exp 3_Plate 4,H4,Ethanol,-20,2,Kit,1610.13,5,4
+Pres Exp 3_Plate 4,H5,Ethanol,-20,2,Kit,1400.73,5,5
+Pres Exp 3_Plate 4,H6,Ethanol,-20,2,Kit,2140.22,5,6
+Pres Exp 3_Plate 3,B11,Ethanol,4,2,Kit,1308.44,1,1
+Pres Exp 3_Plate 3,B12,Ethanol,4,2,Kit,1049.63,1,2
+Pres Exp 3_Plate 3,E10,Ethanol,4,2,Kit,1445.26,1,3
+Pres Exp 3_Plate 3,E11,Ethanol,4,2,Kit,1294.4,1,4
+Pres Exp 3_Plate 3,E12,Ethanol,4,2,Kit,1227.33,1,5
+Pres Exp 3_Plate 3,F11,Ethanol,4,2,Kit,899.21,1,6
+Pres Exp 3_Plate 3,F12,Ethanol,4,2,Kit,915.94,2,1
+Pres Exp 3_Plate 3,G11,Ethanol,4,2,Kit,1369.41,2,2
+Pres Exp 3_Plate 3,G12,Ethanol,4,2,Kit,1048.26,2,3
+Pres Exp 3_Plate 4,A4,Ethanol,4,2,Kit,1422.76,2,4
+Pres Exp 3_Plate 4,A5,Ethanol,4,2,Kit,1171.16,2,5
+Pres Exp 3_Plate 4,A6,Ethanol,4,2,Kit,1004.58,2,6
+Pres Exp 3_Plate 4,A7,Ethanol,4,2,Kit,1165.28,3,1
+Pres Exp 3_Plate 4,A8,Ethanol,4,2,Kit,934.02,3,2
+Pres Exp 3_Plate 4,A9,Ethanol,4,2,Kit,665.13,3,3
+Pres Exp 3_Plate 4,A10,Ethanol,4,2,Kit,773.95,3,4
+Pres Exp 3_Plate 4,A11,Ethanol,4,2,Kit,1545.93,3,5
+Pres Exp 3_Plate 4,A12,Ethanol,4,2,Kit,968.74,3,6
+Pres Exp 3_Plate 4,B4,Ethanol,4,2,Kit,1891.35,4,1
+Pres Exp 3_Plate 4,B5,Ethanol,4,2,Kit,1349.19,4,2
+Pres Exp 3_Plate 4,B6,Ethanol,4,2,Kit,1633.38,4,3
+Pres Exp 3_Plate 4,B8,Ethanol,4,2,Kit,2153.9,4,4
+Pres Exp 3_Plate 4,B9,Ethanol,4,2,Kit,2020.29,4,5
+Pres Exp 3_Plate 4,B10,Ethanol,4,2,Kit,2022.49,4,6
+Pres Exp 3_Plate 4,C4,Ethanol,4,2,Kit,896.84,5,1
+Pres Exp 3_Plate 4,C5,Ethanol,4,2,Kit,1780.84,5,2
+Pres Exp 3_Plate 4,C6,Ethanol,4,2,Kit,1282.05,5,3
+Pres Exp 3_Plate 4,C7,Ethanol,4,2,Kit,1266.74,5,4
+Pres Exp 3_Plate 4,C8,Ethanol,4,2,Kit,1200.55,5,5
+Pres Exp 3_Plate 4,C9,Ethanol,4,2,Kit,1141.68,5,6
+Pres Exp 3_Plate 3,F4,Ethanol,RT,2,Kit,984.4,1,1
+Pres Exp 3_Plate 3,F5,Ethanol,RT,2,Kit,1197.28,1,2
+Pres Exp 3_Plate 3,F6,Ethanol,RT,2,Kit,884.08,1,3
+Pres Exp 3_Plate 3,F7,Ethanol,RT,2,Kit,1485.77,1,4
+Pres Exp 3_Plate 3,F8,Ethanol,RT,2,Kit,920.62,1,5
+Pres Exp 3_Plate 3,F9,Ethanol,RT,2,Kit,922.25,1,6
+Pres Exp 3_Plate 3,G2,Ethanol,RT,2,Kit,1248.34,2,1
+Pres Exp 3_Plate 3,G3,Ethanol,RT,2,Kit,905.79,2,2
+Pres Exp 3_Plate 3,G4,Ethanol,RT,2,Kit,1004.19,2,3
+Pres Exp 3_Plate 3,G5,Ethanol,RT,2,Kit,837.86,2,4
+Pres Exp 3_Plate 3,G6,Ethanol,RT,2,Kit,1368.25,2,5
+Pres Exp 3_Plate 3,G7,Ethanol,RT,2,Kit,1412.66,2,6
+Pres Exp 3_Plate 3,H1,Ethanol,RT,2,Kit,1092.55,3,1
+Pres Exp 3_Plate 3,H2,Ethanol,RT,2,Kit,830.89,3,2
+Pres Exp 3_Plate 3,H3,Ethanol,RT,2,Kit,860.57,3,3
+Pres Exp 3_Plate 3,H4,Ethanol,RT,2,Kit,644.59,3,4
+Pres Exp 3_Plate 3,H5,Ethanol,RT,2,Kit,1045.37,3,5
+Pres Exp 3_Plate 3,H6,Ethanol,RT,2,Kit,917.62,3,6
+Pres Exp 3_Plate 3,G8,Ethanol,RT,2,Kit,846.45,4,1
+Pres Exp 3_Plate 3,G9,Ethanol,RT,2,Kit,1223.44,4,2
+Pres Exp 3_Plate 3,G10,Ethanol,RT,2,Kit,1537.12,4,3
+Pres Exp 3_Plate 3,H7,Ethanol,RT,2,Kit,1734.33,4,4
+Pres Exp 3_Plate 3,H8,Ethanol,RT,2,Kit,1158.55,4,5
+Pres Exp 3_Plate 3,H9,Ethanol,RT,2,Kit,1235.01,4,6
+Pres Exp 3_Plate 3,C10,Ethanol,RT,2,Kit,533.15,5,1
+Pres Exp 3_Plate 3,C11,Ethanol,RT,2,Kit,780.01,5,2
+Pres Exp 3_Plate 3,C12,Ethanol,RT,2,Kit,779.46,5,3
+Pres Exp 3_Plate 3,D10,Ethanol,RT,2,Kit,795.51,5,4
+Pres Exp 3_Plate 3,D11,Ethanol,RT,2,Kit,783.66,5,5
+Pres Exp 3_Plate 3,D12,Ethanol,RT,2,Kit,335.14,5,6
+Pres Exp 3_Plate 4,B11,Frozen,-20,2,Kit,2258.89,1,1
+Pres Exp 3_Plate 4,B12,Frozen,-20,2,Kit,1728.09,1,2
+Pres Exp 3_Plate 4,C10,Frozen,-20,2,Kit,1133.06,1,3
+Pres Exp 3_Plate 4,C11,Frozen,-20,2,Kit,978.37,1,4
+Pres Exp 3_Plate 4,C12,Frozen,-20,2,Kit,1661.28,1,5
+Pres Exp 3_Plate 4,D10,Frozen,-20,2,Kit,1723.45,1,6
+Pres Exp 3_Plate 4,D11,Frozen,-20,2,Kit,1098.48,2,1
+Pres Exp 3_Plate 4,D12,Frozen,-20,2,Kit,841.88,2,2
+Pres Exp 3_Plate 4,E10,Frozen,-20,2,Kit,1033.02,2,3
+Pres Exp 3_Plate 4,E11,Frozen,-20,2,Kit,903.71,2,4
+Pres Exp 3_Plate 4,E12,Frozen,-20,2,Kit,1553.43,2,5
+Pres Exp 3_Plate 4,F11,Frozen,-20,2,Kit,1438.04,2,6
+Pres Exp 3_Plate 4,F12,Frozen,-20,2,Kit,2146.6,3,1
+Pres Exp 3_Plate 4,G8,Frozen,-20,2,Kit,1841.68,3,2
+Pres Exp 3_Plate 4,G9,Frozen,-20,2,Kit,1877.66,3,3
+Pres Exp 3_Plate 4,G10,Frozen,-20,2,Kit,1817.31,3,4
+Pres Exp 3_Plate 4,G11,Frozen,-20,2,Kit,1414.36,3,5
+Pres Exp 3_Plate 4,G12,Frozen,-20,2,Kit,1627.6,3,6
+Pres Exp 3_Plate 4,H7,Frozen,-20,2,Kit,1126.12,4,1
+Pres Exp 3_Plate 4,H8,Frozen,-20,2,Kit,1342.34,4,2
+Pres Exp 3_Plate 4,H9,Frozen,-20,2,Kit,1200.95,4,3
+Pres Exp 3_Plate 5,A4,Frozen,-20,2,Kit,1076.44,4,4
+Pres Exp 3_Plate 5,A5,Frozen,-20,2,Kit,1036.15,4,5
+Pres Exp 3_Plate 5,A6,Frozen,-20,2,Kit,1239.43,4,6
+Pres Exp 3_Plate 5,A7,Frozen,-20,2,Kit,1244.36,5,1
+Pres Exp 3_Plate 5,A8,Frozen,-20,2,Kit,995.81,5,2
+Pres Exp 3_Plate 5,A9,Frozen,-20,2,Kit,1165.79,5,3
+Pres Exp 3_Plate 5,A10,Frozen,-20,2,Kit,848.51,5,4
+Pres Exp 3_Plate 5,A11,Frozen,-20,2,Kit,1176.79,5,5
+Pres Exp 3_Plate 5,A12,Frozen,-20,2,Kit,1302.38,5,6
+Pres Exp 3_Plate 7,H1,Ethanol,-20,208,Kit,891.42,1,1
+Pres Exp 3_Plate 7,H2,Ethanol,-20,208,Kit,467.75,1,2
+Pres Exp 3_Plate 7,H3,Ethanol,-20,208,Kit,1099.55,1,3
+Pres Exp 3_Plate 7,H4,Ethanol,-20,208,Kit,1012.61,1,4
+Pres Exp 3_Plate 7,H5,Ethanol,-20,208,Kit,1259.2,1,5
+Pres Exp 3_Plate 7,H6,Ethanol,-20,208,Kit,714.47,1,6
+Pres Exp 3_Plate 7,G8,Ethanol,-20,208,Kit,952.55,2,1
+Pres Exp 3_Plate 7,G9,Ethanol,-20,208,Kit,846.26,2,2
+Pres Exp 3_Plate 7,G10,Ethanol,-20,208,Kit,1540.63,2,3
+Pres Exp 3_Plate 7,H7,Ethanol,-20,208,Kit,1359.65,2,4
+Pres Exp 3_Plate 7,H8,Ethanol,-20,208,Kit,1282.63,2,5
+Pres Exp 3_Plate 7,H9,Ethanol,-20,208,Kit,757.04,2,6
+Pres Exp 3_Plate 7,B11,Ethanol,-20,208,Kit,3267.93,3,1
+Pres Exp 3_Plate 7,B12,Ethanol,-20,208,Kit,3252.01,3,2
+Pres Exp 3_Plate 7,C11,Ethanol,-20,208,Kit,4273.02,3,3
+Pres Exp 3_Plate 7,C12,Ethanol,-20,208,Kit,3297.16,3,4
+Pres Exp 3_Plate 7,D11,Ethanol,-20,208,Kit,3131.16,3,5
+Pres Exp 3_Plate 7,D12,Ethanol,-20,208,Kit,3297.97,3,6
+Pres Exp 3_Plate 7,E11,Ethanol,-20,208,Kit,2311.91,4,1
+Pres Exp 3_Plate 7,E12,Ethanol,-20,208,Kit,2715.58,4,2
+Pres Exp 3_Plate 7,F11,Ethanol,-20,208,Kit,2902.1,4,3
+Pres Exp 3_Plate 7,F12,Ethanol,-20,208,Kit,3503.5,4,4
+Pres Exp 3_Plate 7,G11,Ethanol,-20,208,Kit,2805.71,4,5
+Pres Exp 3_Plate 7,G12,Ethanol,-20,208,Kit,3170.95,4,6
+Pres Exp 3_Plate 7,C10,Ethanol,-20,208,Kit,673.69,5,1
+Pres Exp 3_Plate 7,D10,Ethanol,-20,208,Kit,827,5,2
+Pres Exp 3_Plate 7,E10,Ethanol,-20,208,Kit,842.42,5,3
+Pres Exp 3_Plate 8 & BG Samples,A4,Ethanol,-20,208,Kit,145.5,5,4
+Pres Exp 3_Plate 8 & BG Samples,A5,Ethanol,-20,208,Kit,717.77,5,5
+Pres Exp 3_Plate 8 & BG Samples,A6,Ethanol,-20,208,Kit,740.84,5,6
+Pres Exp 3_Plate 7,C4,Ethanol,4,208,Kit,3605.69,1,1
+Pres Exp 3_Plate 7,C5,Ethanol,4,208,Kit,3382.92,1,2
+Pres Exp 3_Plate 7,C6,Ethanol,4,208,Kit,4165.52,1,3
+Pres Exp 3_Plate 7,C7,Ethanol,4,208,Kit,3575.48,1,4
+Pres Exp 3_Plate 7,C8,Ethanol,4,208,Kit,3713.37,1,5
+Pres Exp 3_Plate 7,C9,Ethanol,4,208,Kit,5179.61,1,6
+Pres Exp 3_Plate 7,D4,Ethanol,4,208,Kit,1653.53,2,1
+Pres Exp 3_Plate 7,D5,Ethanol,4,208,Kit,1701.84,2,2
+Pres Exp 3_Plate 7,D6,Ethanol,4,208,Kit,1515.09,2,3
+Pres Exp 3_Plate 7,D7,Ethanol,4,208,Kit,1334.53,2,4
+Pres Exp 3_Plate 7,D8,Ethanol,4,208,Kit,1565.9,2,5
+Pres Exp 3_Plate 7,D9,Ethanol,4,208,Kit,1680.18,2,6
+Pres Exp 3_Plate 7,E4,Ethanol,4,208,Kit,2833.89,3,1
+Pres Exp 3_Plate 7,E5,Ethanol,4,208,Kit,1710.18,3,2
+Pres Exp 3_Plate 7,E6,Ethanol,4,208,Kit,2451.87,3,3
+Pres Exp 3_Plate 7,E7,Ethanol,4,208,Kit,2987.62,3,4
+Pres Exp 3_Plate 7,E8,Ethanol,4,208,Kit,2322.65,3,5
+Pres Exp 3_Plate 7,E9,Ethanol,4,208,Kit,3072.86,3,6
+Pres Exp 3_Plate 7,F4,Ethanol,4,208,Kit,2247.59,4,1
+Pres Exp 3_Plate 7,F5,Ethanol,4,208,Kit,2969.49,4,2
+Pres Exp 3_Plate 7,F6,Ethanol,4,208,Kit,2429.22,4,3
+Pres Exp 3_Plate 7,F7,Ethanol,4,208,Kit,2801.58,4,4
+Pres Exp 3_Plate 7,F8,Ethanol,4,208,Kit,2390.45,4,5
+Pres Exp 3_Plate 7,F9,Ethanol,4,208,Kit,2191.43,4,6
+Pres Exp 3_Plate 7,G2,Ethanol,4,208,Kit,744.13,5,1
+Pres Exp 3_Plate 7,G3,Ethanol,4,208,Kit,1046.3,5,2
+Pres Exp 3_Plate 7,G4,Ethanol,4,208,Kit,1418.28,5,3
+Pres Exp 3_Plate 7,G5,Ethanol,4,208,Kit,1057.98,5,4
+Pres Exp 3_Plate 7,G6,Ethanol,4,208,Kit,892.36,5,5
+Pres Exp 3_Plate 7,G7,Ethanol,4,208,Kit,1143.66,5,6
+Pres Exp 3_Plate 6,B11,Ethanol,RT,208,Kit,296.03,1,1
+Pres Exp 3_Plate 6,B12,Ethanol,RT,208,Kit,254.43,1,2
+Pres Exp 3_Plate 6,C11,Ethanol,RT,208,Kit,282.86,1,3
+Pres Exp 3_Plate 6,C12,Ethanol,RT,208,Kit,458.48,1,4
+Pres Exp 3_Plate 6,D11,Ethanol,RT,208,Kit,288.61,1,5
+Pres Exp 3_Plate 6,D12,Ethanol,RT,208,Kit,514.32,1,6
+Pres Exp 3_Plate 6,E11,Ethanol,RT,208,Kit,445.02,2,1
+Pres Exp 3_Plate 6,E12,Ethanol,RT,208,Kit,419.77,2,2
+Pres Exp 3_Plate 6,F11,Ethanol,RT,208,Kit,306.43,2,3
+Pres Exp 3_Plate 6,F12,Ethanol,RT,208,Kit,335.9,2,4
+Pres Exp 3_Plate 6,G11,Ethanol,RT,208,Kit,379.26,2,5
+Pres Exp 3_Plate 6,G12,Ethanol,RT,208,Kit,178.92,2,6
+Pres Exp 3_Plate 6,C10,Ethanol,RT,208,Kit,454.56,3,1
+Pres Exp 3_Plate 6,D10,Ethanol,RT,208,Kit,534.99,3,2
+Pres Exp 3_Plate 6,E10,Ethanol,RT,208,Kit,583.67,3,3
+Pres Exp 3_Plate 7,A4,Ethanol,RT,208,Kit,340.63,3,4
+Pres Exp 3_Plate 7,A5,Ethanol,RT,208,Kit,289.88,3,5
+Pres Exp 3_Plate 7,A6,Ethanol,RT,208,Kit,257.54,3,6
+Pres Exp 3_Plate 7,A7,Ethanol,RT,208,Kit,300.64,4,1
+Pres Exp 3_Plate 7,A8,Ethanol,RT,208,Kit,528.1,4,2
+Pres Exp 3_Plate 7,A9,Ethanol,RT,208,Kit,253.08,4,3
+Pres Exp 3_Plate 7,A10,Ethanol,RT,208,Kit,522.07,4,4
+Pres Exp 3_Plate 7,A11,Ethanol,RT,208,Kit,490.71,4,5
+Pres Exp 3_Plate 7,A12,Ethanol,RT,208,Kit,620.19,4,6
+Pres Exp 3_Plate 7,B4,Ethanol,RT,208,Kit,283.59,5,1
+Pres Exp 3_Plate 7,B5,Ethanol,RT,208,Kit,591.81,5,2
+Pres Exp 3_Plate 7,B6,Ethanol,RT,208,Kit,481.66,5,3
+Pres Exp 3_Plate 7,B8,Ethanol,RT,208,Kit,453.68,5,4
+Pres Exp 3_Plate 7,B9,Ethanol,RT,208,Kit,325.3,5,5
+Pres Exp 3_Plate 7,B10,Ethanol,RT,208,Kit,179.03,5,6
+Pres Exp 3_Plate 8 & BG Samples,A7,Frozen,-20,208,Kit,1899.24,1,1
+Pres Exp 3_Plate 8 & BG Samples,A8,Frozen,-20,208,Kit,2172.06,1,2
+Pres Exp 3_Plate 8 & BG Samples,A9,Frozen,-20,208,Kit,2663.48,1,3
+Pres Exp 3_Plate 8 & BG Samples,A10,Frozen,-20,208,Kit,2552.45,1,4
+Pres Exp 3_Plate 8 & BG Samples,A11,Frozen,-20,208,Kit,2246.65,1,5
+Pres Exp 3_Plate 8 & BG Samples,A12,Frozen,-20,208,Kit,2105.69,1,6
+Pres Exp 3_Plate 8 & BG Samples,B4,Frozen,-20,208,Kit,2931.53,2,1
+Pres Exp 3_Plate 8 & BG Samples,B5,Frozen,-20,208,Kit,2494.78,2,2
+Pres Exp 3_Plate 8 & BG Samples,B6,Frozen,-20,208,Kit,2877.62,2,3
+Pres Exp 3_Plate 8 & BG Samples,B8,Frozen,-20,208,Kit,2617.21,2,4
+Pres Exp 3_Plate 8 & BG Samples,B9,Frozen,-20,208,Kit,2867.07,2,5
+Pres Exp 3_Plate 8 & BG Samples,B10,Frozen,-20,208,Kit,2801.03,2,6
+Pres Exp 3_Plate 8 & BG Samples,C4,Frozen,-20,208,Kit,2171.84,3,1
+Pres Exp 3_Plate 8 & BG Samples,C5,Frozen,-20,208,Kit,3649.2,3,2
+Pres Exp 3_Plate 8 & BG Samples,C6,Frozen,-20,208,Kit,2669.4,3,3
+Pres Exp 3_Plate 8 & BG Samples,C7,Frozen,-20,208,Kit,2178.85,3,4
+Pres Exp 3_Plate 8 & BG Samples,C8,Frozen,-20,208,Kit,3051.82,3,5
+Pres Exp 3_Plate 8 & BG Samples,C9,Frozen,-20,208,Kit,3048.77,3,6
+Pres Exp 3_Plate 8 & BG Samples,D4,Frozen,-20,208,Kit,1416.43,4,1
+Pres Exp 3_Plate 8 & BG Samples,D5,Frozen,-20,208,Kit,1553.49,4,2
+Pres Exp 3_Plate 8 & BG Samples,D6,Frozen,-20,208,Kit,1469.73,4,3
+Pres Exp 3_Plate 8 & BG Samples,D7,Frozen,-20,208,Kit,1915.29,4,4
+Pres Exp 3_Plate 8 & BG Samples,D8,Frozen,-20,208,Kit,1906.67,4,5
+Pres Exp 3_Plate 8 & BG Samples,D9,Frozen,-20,208,Kit,1591.16,4,6
+Pres Exp 3_Plate 8 & BG Samples,E4,Frozen,-20,208,Kit,1392.17,5,1
+Pres Exp 3_Plate 8 & BG Samples,E5,Frozen,-20,208,Kit,2056.71,5,2
+Pres Exp 3_Plate 8 & BG Samples,E6,Frozen,-20,208,Kit,1417.7,5,3
+Pres Exp 3_Plate 8 & BG Samples,E7,Frozen,-20,208,Kit,2258.49,5,4
+Pres Exp 3_Plate 8 & BG Samples,E8,Frozen,-20,208,Kit,2383.72,5,5
+Pres Exp 3_Plate 8 & BG Samples,E9,Frozen,-20,208,Kit,1415.48,5,6
