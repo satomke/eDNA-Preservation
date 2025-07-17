@@ -131,49 +131,55 @@ ggplot(conc_data2, aes(x=Time_Cont, y = qs_conc_adjusted)) +
 
 
 
-###### GLMM ####
+###### GLMM - DNeasy Kit (Frozen & Ethanol) ####
 install.packages("lme4")
 library(lme4)
 
-#With all Treatment data included (except Immediately extracted samples)
-hist(conc_data2$qs_conc_adjusted)
+# Remove Longmire's preserved samples since these were extracted using a PCI method and cannot be compared directly to Frozen or Ethanol-preserved samples extracted with the Qiagen DNeasy Blood & Tissue kit
+
+conc_data_kit = conc_data2 %>%
+  filter(Buffer !="Longmires")
+View(conc_data3)
+
+ggplot(conc_data_kit, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
+  xlab("Time Preserved (weeks)") + ylab("eDNA Concentration (pg/ul)") +
+  geom_point(na.rm = T, aes(color=Treatment))+
+  geom_smooth(method = 'lm', se=T)
+
+hist(conc_data_kit$qs_conc_adjusted)
+
 glmm = glmer(qs_conc_adjusted ~ Time_Cont * Treatment + (1|Technical_sampleID),
-              data = conc_data2,
-              family = Gamma(link = "log"), #used log link function instead of null 
-              na.action = na.omit,
+             data = conc_data_kit,
+             family = Gamma(link = "log"), #used log link function instead of null 
+             na.action = na.omit, 
              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
-    #Convergence issues
+
 
 summary(glmm)
 anova(glmm)
-  #Interaction not significant -- remove
+library(car)
+Anova(glmm)
+#Interaction not significant -- could remove
 
+#Compare with model lacking interaction
 glmm2 = glmer(qs_conc_adjusted ~ Time_Cont + Treatment + (1|Technical_sampleID),
-             data = conc_data2,
-             family = Gamma(link = "log"), #used log link function instead of null 
-             na.action = na.omit,
-             control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
-    ##Convergence issues - try rescaling Time?
+              data = conc_data_kit,
+              family = Gamma(link = "log"), #used log link function instead of null 
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
 
 summary(glmm2)
 anova(glmm2)
 anova(glmm, glmm2)
-#Data: conc_data2
-#Models:
-#  glmm2: qs_conc_adjusted ~ Time_Cont + Treatment + (1 | Technical_sampleID)
-#glmm: qs_conc_adjusted ~ Time * Treatment + (1 | Technical_sampleID)
-#npar   AIC   BIC logLik deviance  Chisq Df Pr(>Chisq)
-#glmm2    9 30871 30919 -15427    30853                     
-#glmm    14 30875 30950 -15424    30847 5.9832  5     0.3079
-
-  # AIC and BIC slightly lower for model lacking interaction term
+#No statistical difference between models - use simpler one lacking interaction term
 
 
 # Plot residuals  
 ypred = predict(glmm2)
 res = residuals(glmm2, type = 'pearson')
-plot(ypred,res) # very heteroskedastic
-hist(res) # slightly skewed 
+plot(ypred,res) # some heteroskedasticity
+hist(res) # looks ok
 plot(res)
 
 
@@ -183,45 +189,6 @@ qqline(residuals(glmm2))
 hist(residuals(glmm2))
 
 
-# Try scaling Time and using a Gaussian distribution to see if it resolves convergence issues
-conc_data2$time_scaled <- scale(conc_data2$Time_Cont)
-
-glmm.scal = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
-              data = conc_data2,
-              family = gaussian(link = "log"),
-              na.action = na.omit,
-              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
-  #fixed convergence issues
-
-summary(glmm.scal) #time significant
-anova(glmm.scal)
-
-
-# Plot residuals to see if they're better
-ypred = predict(glmm.scal)
-res = residuals(glmm.scal, type = 'pearson')
-plot(ypred,res) # still heteroskedastic but looks better
-hist(res) # no longer skewed but signs of underdispersion
-plot(res)
-
-
-plot(glmm.scal) # heteroskedastic but slightly better looking
-qqnorm(residuals(glmm.scal))
-qqline(residuals(glmm.scal)) #evidence of underdispersion
-hist(residuals(glmm.scal)) #underdispersion
-     
-    #Scaled time and Gaussian distribution helps residuals but still not great - some underdispersion in the variance
-
-# Try a Gaussian distribution but no scaling
-glmm3 = glmer(qs_conc_adjusted ~ Time_Cont + Treatment + (1|Technical_sampleID),
-              data = conc_data2,
-              family = gaussian(link = "log"), #used log link function instead of null 
-              na.action = na.omit,
-              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
-    ## Convergence issues again -- scaling Time seems necessary
-
-
-
 ### Remove outliers to see if this helps the fit of the model
 
 ## Remove 2 outliers with very high eDNA concentrations: Ethanol 4 i (52 weeks) & Frozen -20 i (26 weeks)
@@ -229,303 +196,221 @@ glmm3 = glmer(qs_conc_adjusted ~ Time_Cont + Treatment + (1|Technical_sampleID),
 #Remove 9 PCR replicates for Ethanol 4i 1 year (52 weeks)
 library(tidyverse)
 
-conc_data3 = conc_data2 %>%
+conc_data_kit2 = conc_data_kit %>%
   filter(Technical_sampleID !="Ethanol 4 52 1")
 
 #Remove 9 PCR replicates for Frozen -20i 6 months (26 weeks)
-conc_data4 = conc_data3 %>%
+conc_data_kit3 = conc_data_kit2 %>%
   filter(Technical_sampleID !="Frozen -20 26 1")
 
-#Rescale time after outliers were removed
-conc_data4$time_scaled <- scale(conc_data4$Time_Cont)
-
-## Visualize Data
-
-#eDNA Concentrations over time for each Treatment group - separate plots per Treatment
-ggplot(conc_data4, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
-  xlab("Time Preserved (weeks)") + ylab("eDNA Concentration (pg/ul)") +
-  geom_point(aes(color=Treatment))+
-  geom_smooth(method = 'lm', se=T)+
-  facet_wrap(vars(Treatment))
-
 #eDNA Concentrations over time for each Treatment group - overlaid onto one plot
-ggplot(conc_data4, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
+ggplot(conc_data_kit3, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
   xlab("Time Preserved (weeks)") + ylab("eDNA Concentration (pg/ul)") +
   geom_point(na.rm = T, aes(color=Treatment))+
   geom_smooth(method = 'lm', se=T)
 
-#eDNA Concentrations over time - overlaid onto one plot using loess smoothing method
-ggplot(conc_data4, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
-  xlab("Time Preserved (weeks)") + ylab("eDNA Concentration (pg/ul)") +
-  geom_point(na.rm = T, aes(color=Treatment))+
-  geom_smooth(method = 'loess', se=T)
-
-#eDNA Concentrations over time - overlaid onto one plot using lm smoothing method
-ggplot(conc_data4, aes(x=Time_Cont, y = qs_conc_adjusted)) +
-  geom_point(na.rm = T, aes(color=Treatment))+
-  geom_smooth(method = 'lm', se=T)
-
-hist(conc_data4$qs_conc_adjusted)
-
-
-## Run GLMMs again
 
 glmm3 = glmer(qs_conc_adjusted ~ Time_Cont * Treatment + (1|Technical_sampleID),
-             data = conc_data4,
-             family = Gamma(link = "log"), #used log link function instead of null 
-             na.action = na.omit)
-        # Convergence issues still
-    
+              data = conc_data_kit3,
+              family = Gamma(link = "log"), #used log link function instead of null 
+              na.action = na.omit, 
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+
 summary(glmm3)
 anova(glmm3)
-    #Interaction not significant -- remove
+library(car)
+Anova(glmm3)
+#Interaction not significant -- could remove
 
 glmm4 = glmer(qs_conc_adjusted ~ Time_Cont + Treatment + (1|Technical_sampleID),
-              data = conc_data4,
+              data = conc_data_kit3,
               family = Gamma(link = "log"), #used log link function instead of null 
-              na.action = na.omit)
-# Convergence issues still
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
 
-summary(glmm4) 
+
+summary(glmm4)
 anova(glmm4)
-    #Time marginally significant -- remove
-
 anova(glmm3, glmm4)
-  #models not significantly different but model lacking interaction term between Time and Treatment has slightly lower AIC and BIC
+#No statistical difference between models - use simpler one lacking interaction term
 
-# Remove Time to see what happens
-glmm5 = glmer(qs_conc_adjusted ~ Treatment + (1|Technical_sampleID),
-              data = conc_data4,
-              family = Gamma(link = "log"), #used log link function instead of null 
-              na.action = na.omit)
-summary(glmm5) 
-anova(glmm5)
-anova(glmm4, glmm5) #Marginal significance between a full model and one without Time; AIC slightly lower for full model and BIC slightly lower for model lacking Time -- keep Time and run diagnostics
 
+# Plot residuals  
 ypred = predict(glmm4)
 res = residuals(glmm4, type = 'pearson')
-plot(ypred,res) #heteroskedastic residuals
-hist(res) # slightly skewed
+plot(ypred,res) # some heteroskedasticity, but not horrible
+hist(res) # looks ok
 plot(res)
 
 
-#GLMM diagnostics
-install.packages("DHARMa")
-library(DHARMa)
-
-testDispersion(glmm4) #test for dispersion - significant: p<0.001
-simulationOutput <- simulateResiduals(fittedModel = glmm4, plot = T) #residual plots
-residuals(simulationOutput) #print residuals; scaled residual value of 0.5 means that half of the simulated data are higher than the observed value, and half of them lower. A value of 0.99 would mean that nearly all simulated data are lower than the observed value. The minimum/maximum values for the residuals are 0 and 1. For a correctly specified model we would expect asymptotically: 1) a uniform (flat) distribution of the scaled residuals, 2) uniformity in y direction if we plot against any predictor.
-plot(simulationOutput) #residual plots
-plotQQunif(simulationOutput) # left plot in plot.DHARMa() separately; should follow diagonal line
-  ## evidence of underdispersion
-plotResiduals(simulationOutput) # right plot in plot.DHARMa() separately; solid lines should pair with dashed lines
-
-#### There seems to be underdispersion in the model (tails are not as fat as we'd expect), probably from overfitting due to the 9 qPCR replicates per sample. Underdispersion is less serious than overdispersion b/c it will be more conservative in the p-values- per Hartig 2024 (DHARMa).
-
-testUniformity(simulationOutput) # tests if the overall distribution conforms to expectations
-testOutliers(simulationOutput) # tests if there are more simulation outliers than expected
-testDispersion(simulationOutput) # tests if the simulated dispersion is equal to the observed dispersion
-testDispersion(simulationOutput, alternative = "greater") # tests for overdispersion, specifically
-    #model is underdispersed!
-testQuantiles(simulationOutput) # fits a quantile regression or residuals against a predictor (default predicted value), and tests of this conforms to the expected quantile
-testGeneric(simulationOutput, mean) # test if a generic summary statistics (user-defined) deviates from model expectations
-
-
-plot(glmm4) #still heteroskedastic
-qqnorm(residuals(glmm4)) #not great
+plot(glmm4) # heteroskedastic
+qqnorm(residuals(glmm4))
 qqline(residuals(glmm4))
-hist(residuals(glmm4)) #better - less skewed and less underdispersed than with outliers
+hist(residuals(glmm4))
+#not great residuals
 
 
+#try scaling time
+conc_data_kit3$time_scaled <- scale(conc_data_kit3$Time_Cont)
 
-### Try using a Gaussian distribution, scaling Time, and including a BOBYQA optimizer since this helped with model convergence before when outliers were still included
+glmm5 = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
+              data = conc_data_kit3,
+              family = Gamma(link = "log"), #used log link function instead of null 
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
 
-glmm.out.rm.int = glmer(qs_conc_adjusted ~ time_scaled * Treatment + (1|Technical_sampleID),
-             data = conc_data4,
-             family = gaussian(link = "log"), #used log link function instead of null 
-             na.action = na.omit,
-             control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+# Plot residuals  
+ypred = predict(glmm5)
+res = residuals(glmm5, type = 'pearson')
+plot(ypred,res) # some heteroskedasticity
+hist(res) # looks ok
+plot(res)
 
-summary(glmm.out.rm.int)
+
+plot(glmm5) # heteroskedastic
+qqnorm(residuals(glmm5))
+qqline(residuals(glmm5))
+hist(residuals(glmm5))
+
+
+#try using gaussian dist
+glmm6 = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
+              data = conc_data_kit3,
+              family = gaussian(link = "log"), #used log link function instead of null 
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+# Plot residuals  
+ypred = predict(glmm6)
+res = residuals(glmm6, type = 'pearson')
+plot(ypred,res)
+hist(res)
+plot(res)
+
+
+plot(glmm6) # looks better
+qqnorm(residuals(glmm6))
+qqline(residuals(glmm6)) #looks better
+hist(residuals(glmm6))
+
+#removing outliers, scaling time, and using guassian dist helped meet assumptions
+
+#confirm no interaction is better
+glmm7 = glmer(qs_conc_adjusted ~ time_scaled * Treatment + (1|Technical_sampleID),
+              data = conc_data_kit3,
+              family = gaussian(link = "log"), #used log link function instead of null 
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+anova(glmm6, glmm7) 
+#Models:
+#glmm6: qs_conc_adjusted ~ time_scaled + Treatment + (1 | Technical_sampleID)
+#glmm7: qs_conc_adjusted ~ time_scaled * Treatment + (1 | Technical_sampleID)
+#npar   AIC   BIC logLik deviance  Chisq Df Pr(>Chisq)  
+#glmm6    7 21564 21598 -10775    21550                       
+#glmm7   10 21560 21609 -10770    21540 9.8211  3    0.02015 *
+
+    #interaction better
+
+summary(glmm7)
 #Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
 #Family: gaussian  ( log )
 #Formula: qs_conc_adjusted ~ time_scaled * Treatment + (1 | Technical_sampleID)
-#Data: conc_data4
+#Data: conc_data_kit3
 #Control: glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 5e+05))
 #
 #AIC      BIC   logLik deviance df.resid 
-#32763.6  32838.0 -16367.8  32735.6     1490 
+#21559.7  21608.6 -10769.8  21539.7      980 
 #
 #Scaled residuals: 
 #  Min      1Q  Median      3Q     Max 
-#-7.3316 -0.4883 -0.0294  0.4533  5.6145 
+#-7.4937 -0.4578 -0.0185  0.4542  5.7386 
 #
 #Random effects:
 #  Groups             Name        Variance Std.Dev.
-#Technical_sampleID (Intercept)  3148538 1774    
-#Residual                       14395947 3794    
-#Number of obs: 1504, groups:  Technical_sampleID, 170
+#Technical_sampleID (Intercept)  2164854 1471    
+#Residual                       13779893 3712    
+#Number of obs: 990, groups:  Technical_sampleID, 110
 #
 #Fixed effects:
 #  Estimate Std. Error t value Pr(>|z|)    
-#(Intercept)                       10.37335    0.08842 117.324   <2e-16 ***
-#  time_scaled                        0.01398    0.08532   0.164   0.8699    
-#TreatmentEthanol 4                -0.13052    0.12620  -1.034   0.3010    
-#TreatmentFrozen -20                0.31982    0.12618   2.535   0.0113 *  
-#  TreatmentFrozen -80                0.23838    0.12504   1.906   0.0566 .  
-#TreatmentLongmires 4              -1.36079    0.12125 -11.223   <2e-16 ***
-#  TreatmentLongmires RT             -1.22367    0.12597  -9.714   <2e-16 ***
-#  time_scaled:TreatmentEthanol 4     0.08688    0.12391   0.701   0.4832    
-#time_scaled:TreatmentFrozen -20   -0.13577    0.12070  -1.125   0.2607    
-#time_scaled:TreatmentFrozen -80    0.17988    0.12066   1.491   0.1360    
-#time_scaled:TreatmentLongmires 4   0.13676    0.11882   1.151   0.2497    
-#time_scaled:TreatmentLongmires RT  0.16510    0.13540   1.219   0.2227    
+#(Intercept)                     10.37353    0.07492 138.470  < 2e-16 ***
+#  time_scaled                      0.01444    0.07469   0.193  0.84674    
+#TreatmentEthanol 4              -0.12943    0.10697  -1.210  0.22630    
+#TreatmentFrozen -20              0.31811    0.10692   2.975  0.00293 ** 
+#TreatmentFrozen -80              0.24064    0.10595   2.271  0.02313 *  
+#time_scaled:TreatmentEthanol 4   0.08975    0.10848   0.827  0.40806    
+#time_scaled:TreatmentFrozen -20 -0.14025    0.10567  -1.327  0.18444    
+#time_scaled:TreatmentFrozen -80  0.18582    0.10563   1.759  0.07857 .  
 #---
 #  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 #
 #Correlation of Fixed Effects:
-#  (Intr) tm_scl TrtmE4 TrF-20 TrF-80 TrtmL4 TrtLRT t_:TE4 t_:TF-2 t_:TF-8 t_:TL4
-#time_scaled -0.029                                                               #     
-#TrtmntEthn4 -0.701  0.020                                                        #         
-#TrtmntFr-20 -0.701  0.020  0.491                                                 #         
-#TrtmntFr-80 -0.707  0.020  0.495  0.495                                          #         
-#TrtmntLngm4 -0.729  0.021  0.511  0.511  0.516                                   #        
-#TrtmntLngRT -0.702  0.020  0.492  0.492  0.496  0.512                            #         
-#tm_scld:TE4  0.020 -0.689  0.003 -0.014 -0.014 -0.014 -0.014                     #         
-#tm_sc:TF-20  0.020 -0.707 -0.014 -0.025 -0.014 -0.015 -0.014  0.487              #         
-#tm_sc:TF-80  0.020 -0.707 -0.014 -0.014 -0.029 -0.015 -0.014  0.487  0.500       #         
-#tm_scld:TL4  0.021 -0.718 -0.014 -0.014 -0.015 -0.056 -0.014  0.494  0.508   0.508        
-#tm_scl:TLRT  0.018 -0.630 -0.013 -0.013 -0.013 -0.013  0.083  0.434  0.445   0.446   0.452
+#  (Intr) tm_scl TrtmE4 TrF-20 TrF-80 t_:TE4 t_:TF-2
+#time_scaled -0.017                                           
+#TrtmntEthn4 -0.700  0.012                                    
+#TrtmntFr-20 -0.701  0.012  0.491                             
+#TrtmntFr-80 -0.707  0.012  0.495  0.495                      
+#tm_scld:TE4  0.011 -0.689  0.015 -0.008 -0.008               
+#tm_sc:TF-20  0.012 -0.707 -0.008 -0.013 -0.008  0.487        
+#tm_sc:TF-80  0.012 -0.707 -0.008 -0.008 -0.017  0.487  0.500 
 
-anova(glmm.out.rm.int)
+anova(glmm7)
 #Analysis of Variance Table
-#npar Sum Sq Mean Sq F value
-#time_scaled              1   6.60   6.600       0
-#Treatment                5 368.24  73.648       0
-#time_scaled:Treatment    5   9.64   1.928       0
+#npar  Sum Sq Mean Sq F value
+#time_scaled              1  1.7554  1.7554       0
+#Treatment                3 22.7156  7.5719       0
+#time_scaled:Treatment    3 10.2729  3.4243       0
 
-library(car)
-Anova(glmm.out.rm.int)
+Anova(glmm7)
 #Analysis of Deviance Table (Type II Wald chisquare tests)
 #
 #Response: qs_conc_adjusted
 #Chisq Df Pr(>Chisq)    
-# time_scaled             5.0697  1    0.02435 *  
-#  Treatment             368.2430  5    < 2e-16 ***
-#  time_scaled:Treatment   9.6389  5    0.08614 .   
-#---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-      #Interaction not significant, but is close
-
-glmm.out.rm = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
-                        data = conc_data4,
-                        family = gaussian(link = "log"), #used log link function instead of null 
-                        na.action = na.omit,
-                        control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
-
-anova(glmm.out.rm.int, glmm.out.rm)
-  # models not significantly different, but AIC and BIC are slightly lower in model lacking interaction term -- interaction does not improve the model and should be removed
-
-#Data: conc_data4
-#Models:
-#  glmm.out.rm: qs_conc_adjusted ~ time_scaled + Treatment + (1 | Technical_sampleID)
-#glmm.out.rm.int: qs_conc_adjusted ~ time_scaled * Treatment + (1 | Technical_sampleID)
-#npar   AIC   BIC logLik deviance  Chisq Df Pr(>Chisq)  
-#glmm.out.rm        9 32763 32811 -16372    32745                       
-#glmm.out.rm.int   14 32764 32838 -16368    32736 9.3755  5    0.09499 .
-#---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#time_scaled            1.5388  1    0.21480    
+#Treatment             22.7157  3  4.629e-05 ***
+#time_scaled:Treatment 10.2729  3    0.01638 *  
 
 
-summary(glmm.out.rm)
-#Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) [glmerMod]
-#Family: gaussian  ( log )
-#Formula: qs_conc_adjusted ~ time_scaled + Treatment + (1 | #Technical_sampleID)
-#Data: conc_data4
-#Control: glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 5e+05))
-#
-#AIC      BIC   logLik deviance df.resid 
-#32763.0  32810.8 -16372.5  32745.0     1495 
-#
-#Scaled residuals: 
-#  Min      1Q  Median      3Q     Max 
-#-7.3316 -0.4883 -0.0294  0.4533  5.6145 
-#
-#Random effects:
-#  Groups             Name        Variance Std.Dev.
-#Technical_sampleID (Intercept)  3327058 1824    
-#Residual                       14395947 3794    
-#Number of obs: 1504, groups:  Technical_sampleID, 170
-#
-#Fixed effects:
-#  Estimate Std. Error t value Pr(>|z|)    
-#(Intercept)           10.37228    0.09085 114.165   <2e-16 ***
-#  time_scaled            0.08101    0.03699   2.190   0.0285 *  
-#  TreatmentEthanol 4    -0.12917    0.12969  -0.996   0.3192    
-#TreatmentFrozen -20    0.31731    0.12967   2.447   0.0144 *  
-#  TreatmentFrozen -80    0.24374    0.12848   1.897   0.0578 .  
-#TreatmentLongmires 4  -1.35281    0.12442 -10.873   <2e-16 ***
-#  TreatmentLongmires RT -1.23613    0.12865  -9.609   <2e-16 ***
-#  ---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#
-#Correlation of Fixed Effects:
-#  (Intr) tm_scl TrtmE4 TrF-20 TrF-80 TrtmL4
-#time_scaled -0.012                                   
-#TrtmntEthn4 -0.701  0.018                            
-#TrtmntFr-20 -0.701  0.002  0.491                     
-#TrtmntFr-80 -0.707  0.000  0.495  0.495              
-#TrtmntLngm4 -0.730 -0.017  0.511  0.512  0.516       
-#TrtmntLngRT -0.707  0.051  0.496  0.495  0.499  0.515
-
-
-anova(glmm.out.rm)
-#Analysis of Variance Table
-#npar Sum Sq Mean Sq F value
-#time_scaled    1   6.25   6.246       0
-#Treatment      5 348.48  69.696       0
-
-library(car)
-Anova(glmm.out.rm)
-#Analysis of Deviance Table (Type II Wald chisquare tests)
-#
-#Response: qs_conc_adjusted
-#Chisq Df Pr(>Chisq)    
-#time_scaled   4.7976  1     0.0285 *  
-#  Treatment   348.4838  5     <2e-16 ***
-#  ---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-
-## Compare glmm.out.rm with model lacking random effect
+## Compare with model lacking random effect
 glmm.fixed.only = glm(qs_conc_adjusted ~ time_scaled + Treatment,
-                    data = conc_data4,
-                    family = gaussian(link = "log"), #used log link function instead of null 
-                    na.action = na.omit)
+                      data = conc_data_kit3,
+                      family = gaussian(link = "log"), #used log link function instead of null 
+                      na.action = na.omit)
 
-anova(glmm.out.rm, glmm.fixed.only)
-#Data: conc_data4
+anova(glmm7, glmm.fixed.only) 
+#Data: conc_data_kit3
 #Models:
 #  glmm.fixed.only: qs_conc_adjusted ~ time_scaled + Treatment
-#glmm.out.rm: qs_conc_adjusted ~ time_scaled + Treatment + (1 | Technical_sampleID)
+#  glmm7: qs_conc_adjusted ~ time_scaled * Treatment + (1 | Technical_sampleID)
 #npar   AIC   BIC logLik deviance  Chisq Df Pr(>Chisq)    
-#glmm.fixed.only    8 33258 33301 -16621    33242                         
-#glmm.out.rm        9 32763 32811 -16372    32745 497.26  1  < 2.2e-16 ***
-#  ---
-#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#glmm.fixed.only    6 22228 22257 -11108    22216                         
+#glmm7             10 21560 21609 -10770    21540 675.89  4  < 2.2e-16 ***
 
-    ## Including random effect significantly improves model
+    #including random effect greatly improves model
 
 
+
+# Plot residuals  
+ypred = predict(glmm7)
+res = residuals(glmm7, type = 'pearson')
+plot(ypred,res)
+hist(res) 
+plot(res)
+
+
+plot(glmm7) # looks good
+qqnorm(residuals(glmm7))
+qqline(residuals(glmm7))
+hist(residuals(glmm7))
 
 # Diagnostics
 install.packages("DHARMa")
 library(DHARMa)
 
-testDispersion(glmm.out.rm) #no dispersion
-simulationOutput <- simulateResiduals(fittedModel = glmm.out.rm, plot = T) #residual plots
+testDispersion(glmm7) #no dispersion
+simulationOutput <- simulateResiduals(fittedModel = glmm7, plot = T) #residual plots
 residuals(simulationOutput) 
 plot(simulationOutput) #residual plots
 plotQQunif(simulationOutput) # left plot in plot.DHARMa() separately; should follow diagonal line
@@ -534,11 +419,9 @@ plotResiduals(simulationOutput) # right plot in plot.DHARMa() separately; solid 
 #remove NA's from dataset to run following code
 install.packages("tidyverse")
 library(tidyverse)
-conc_data4_na <- conc_data4 %>% drop_na(qs_conc_adjusted)
-View(conc_data4_na)
+conc_data_kit3_na <- conc_data_kit3 %>% drop_na(qs_conc_adjusted)
 
-plotResiduals(simulationOutput, form = conc_data4_na$Time) #residuals are not uniform for any Time group
-plotResiduals(simulationOutput, form = conc_data4_na$Treatment) #Ethanol treatments off
+plotResiduals(simulationOutput, form = conc_data_kit3_na$Treatment) #Ethanol treatments off
 
 testUniformity(simulationOutput) # tests if the overall distribution conforms to expectations
 testOutliers(simulationOutput) # tests if there are more simulation outliers than expected
@@ -549,56 +432,14 @@ testQuantiles(simulationOutput) # fits a quantile regression or residuals agains
 testGeneric(simulationOutput, mean) # test if a generic summary statistics (user-defined) deviates from model expectations
 
 
-plot(glmm.out.rm)
-qqnorm(residuals(glmm.out.rm))
-qqline(residuals(glmm.out.rm))
-hist(residuals(glmm.out.rm))
-
-    ## RESIDUAL NORMALITY IS STILL SHAKY, but better than before
-    ## HETEROSKED LOOKS OK OVERALL
-    ## NO OVERDISPERSION PRESENT
-
-#look at variances among Treatments
-conc_data4 <- within(conc_data4,
-                     {
-                       # Time x Treatment
-                       inter <- interaction(Treatment,Time_Cont)
-                       inter <- reorder(inter, qs_conc_adjusted, mean)
-                     })
-
-library(ggplot2)
-library(ggpubr)
-ggplot(data = conc_data4, aes(factor(x = inter), y = log(qs_conc_adjusted+1))) +
-  geom_boxplot(colour = "skyblue2", outlier.shape = 21,
-               outlier.colour = "skyblue2") +
-  ylab("log(eDNA Conc)\n") + # \n creates a space after the title
-  xlab("\nTime x Treatment") + # space before the title
-  theme_bw() + theme(axis.text.x = element_blank()) +
-  stat_summary(fun = mean, geom = "point", colour = "red")
-
-
-#plot effect sizes for model
-install.packages("sjPlot")
-library(sjPlot)
-plot_model(glmm.out.rm, show.values = TRUE, show.p=TRUE)
-plot_model(glmm.out.rm, type="slope")
-
-
-install.packages("effects")
-library(effects)
-plot(allEffects(glmm.out.rm))
-
-plot(allEffects(glmm.out.rm.int))
-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-###### BEST MODEL FOR EXPERIMENT 1 ####
+###### BEST MODEL FOR EXPERIMENT 1 - DNeasy Kit ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-glmm.out.rm = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
-                    data = conc_data4,
-                    family = gaussian(link = "log"), #used log link function instead of null 
-                    na.action = na.omit,
-                    control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+glmm7 = glmer(qs_conc_adjusted ~ time_scaled * Treatment + (1|Technical_sampleID),
+              data = conc_data_kit3,
+              family = gaussian(link = "log"),
+              na.action = na.omit,
+              control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -608,40 +449,176 @@ glmm.out.rm = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sa
 #post hoc pairwise comparison of Treatments for experiment 1
 install.packages("emmeans")
 library(emmeans)
-emm_treatment <- emmeans(glmm.out.rm,  pairwise ~ Treatment)
-emm_treatment
-#$emmeans
-#Treatment    emmean     SE  df asymp.LCL asymp.UCL
-#Ethanol -20   10.37 0.0909 Inf     10.19     10.55
-#Ethanol 4     10.24 0.0925 Inf     10.06     10.42
-#Frozen -20    10.69 0.0925 Inf     10.51     10.87
-#Frozen -80    10.62 0.0909 Inf     10.44     10.79
-#Longmires 4    9.02 0.0850 Inf      8.85      9.19
-#Longmires RT   9.14 0.0910 Inf      8.96      9.31
+emtrends(glmm7, pairwise ~ Treatment, var = "time_scaled")
+#$emtrends
+#Treatment   time_scaled.trend     SE  df asymp.LCL asymp.UCL
+#Ethanol -20            0.0144 0.0747 Inf   -0.1320    0.1608
+#Ethanol 4              0.1042 0.0787 Inf   -0.0500    0.2584
+#Frozen -20            -0.1258 0.0747 Inf   -0.2723    0.0207
+#Frozen -80             0.2003 0.0747 Inf    0.0539    0.3467
 #
-#Results are given on the log (not the response) scale. 
 #Confidence level used: 0.95 
 #
 #$contrasts
 #contrast                     estimate    SE  df z.ratio p.value
-#(Ethanol -20) - Ethanol 4      0.1292 0.130 Inf   0.996  0.9194
-#(Ethanol -20) - (Frozen -20)  -0.3173 0.130 Inf  -2.447  0.1403
-#(Ethanol -20) - (Frozen -80)  -0.2437 0.128 Inf  -1.897  0.4039
-#(Ethanol -20) - Longmires 4    1.3528 0.124 Inf  10.873  <.0001
-#(Ethanol -20) - Longmires RT   1.2361 0.129 Inf   9.609  <.0001
-#Ethanol 4 - (Frozen -20)      -0.4465 0.131 Inf  -3.412  0.0085
-#Ethanol 4 - (Frozen -80)      -0.3729 0.130 Inf  -2.875  0.0465
-#Ethanol 4 - Longmires 4        1.2236 0.126 Inf   9.734  <.0001
-#Ethanol 4 - Longmires RT       1.1070 0.130 Inf   8.532  <.0001
-#(Frozen -20) - (Frozen -80)    0.0736 0.130 Inf   0.567  0.9931
-#(Frozen -20) - Longmires 4     1.6701 0.126 Inf  13.292  <.0001
-#(Frozen -20) - Longmires RT    1.5534 0.130 Inf  11.966  <.0001
-#(Frozen -80) - Longmires 4     1.5966 0.124 Inf  12.832  <.0001
-#(Frozen -80) - Longmires RT    1.4799 0.129 Inf  11.503  <.0001
-#Longmires 4 - Longmires RT    -0.1167 0.125 Inf  -0.936  0.9373
+#(Ethanol -20) - Ethanol 4     -0.0897 0.108 Inf  -0.827  0.8415
+#(Ethanol -20) - (Frozen -20)   0.1402 0.106 Inf   1.327  0.5455
+#(Ethanol -20) - (Frozen -80)  -0.1858 0.106 Inf  -1.759  0.2933
+#Ethanol 4 - (Frozen -20)       0.2300 0.109 Inf   2.119  0.1469
+#Ethanol 4 - (Frozen -80)      -0.0961 0.108 Inf  -0.886  0.8124
+#(Frozen -20) - (Frozen -80)   -0.3261 0.106 Inf  -3.086  0.0109
+
+
+###### GLMM - PCI (Longmires) ####
+
+## Include only Longmire's preserved samples
+
+conc_lm = conc_data2 %>%
+  filter(Buffer =="Longmires")
+View(conc_lm)
+
+hist(conc_lm$qs_conc_adjusted)
+ggplot(conc_lm, aes(x=qs_conc_adjusted))+
+  geom_histogram(fill = "white", color= "black")+
+  facet_grid(Treatment ~ .)
+
+ggplot(conc_lm, aes(x=Time_Cont, y = qs_conc_adjusted, col = Treatment)) +
+  xlab("Time Preserved (weeks)") + ylab("eDNA Concentration (pg/ul)") +
+  geom_point(na.rm = T, aes(color=Treatment))+
+  geom_smooth(method = 'lm', se=T)
+
+hist(conc_lm$qs_conc_adjusted)
+
+
+glmm.lm = glmer(qs_conc_adjusted ~ Time_Cont * Treatment + (1|Technical_sampleID),
+                data = conc_lm,
+                family = Gamma(link = "log"), #used log link function instead of null 
+                na.action = na.omit, 
+                control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+
+summary(glmm.lm)
+anova(glmm.lm)
+library(car)
+Anova(glmm.lm)
+#Interaction not significant -- could remove
+
+glmm.lm2 = glmer(qs_conc_adjusted ~ Time_Cont + Treatment + (1|Technical_sampleID),
+                data = conc_lm,
+                family = Gamma(link = "log"), #used log link function instead of null 
+                na.action = na.omit, 
+                control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+#Convergence issues
+
+#Try scaling time to deal with convergence issues
+conc_lm$time_scaled<-scale(conc_lm$Time_Cont)
+
+glmm.lm3 = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
+                 data = conc_lm,
+                 family = Gamma(link = "log"), #used log link function instead of null 
+                 na.action = na.omit, 
+                 control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+# Plot residuals  
+ypred = predict(glmm.lm3)
+res = residuals(glmm.lm3, type = 'pearson')
+plot(ypred,res) # looks good
+hist(res) # looks good
+plot(res)
+
+
+plot(glmm.lm3) # good
+qqnorm(residuals(glmm.lm3)) #good
+qqline(residuals(glmm.lm3))
+hist(residuals(glmm.lm3)) #good
+
+## Compare with model including interaction term
+glmm.lm4 = glmer(qs_conc_adjusted ~ time_scaled * Treatment + (1|Technical_sampleID),
+                 data = conc_lm,
+                 family = Gamma(link = "log"), #used log link function instead of null 
+                 na.action = na.omit, 
+                 control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+anova(glmm.lm3, glmm.lm4)
+#Data: conc_lm
+#Models:
+#glmm.lm3: qs_conc_adjusted ~ time_scaled + Treatment + (1 | Technical_sampleID)
+#glmm.lm4: qs_conc_adjusted ~ time_scaled * Treatment + (1 | Technical_sampleID)
+#npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)
+#glmm.lm3    5 9911.6 9932.8 -4950.8   9901.6                     
+#glmm.lm4    6 9913.5 9939.0 -4950.8   9901.5 0.0294  1     0.8638
+
+      # no interaction better
+
+
+## Compare with model lacking random effect
+glmm.fixed.only = glm(qs_conc_adjusted ~ time_scaled + Treatment,
+                      data = conc_lm,
+                      family = Gamma(link = "log"), #used log link function instead of null 
+                      na.action = na.omit)
+
+
+anova(glmm.lm3, glmm.fixed.only) #including random effect greatly improves model
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###### BEST MODEL FOR EXPERIMENT 1 ####
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+glmm.lm3 = glmer(qs_conc_adjusted ~ time_scaled + Treatment + (1|Technical_sampleID),
+                 data = conc_lm,
+                 family = Gamma(link = "log"), #used log link function instead of null 
+                 na.action = na.omit, 
+                 control = glmerControl(optimizer = "bobyqa", optCtrl=list(maxfun=500000)))
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+summary(glmm.lm3)
+#Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+#Family: Gamma  ( log )
+#Formula: qs_conc_adjusted ~ time_scaled + Treatment + (1 | Technical_sampleID)
+#Data: conc_lm
+#Control: glmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 5e+05))
 #
-#Results are given on the log (not the response) scale. 
-#P value adjustment: tukey method for comparing a family of 6 estimates 
+#AIC      BIC   logLik deviance df.resid 
+#9911.6   9932.8  -4950.8   9901.6      509 
+#
+#Scaled residuals: 
+#  Min      1Q  Median      3Q     Max 
+#-1.9414 -0.6119 -0.0364  0.5494  4.7891 
+#
+#Random effects:
+#  Groups             Name        Variance Std.Dev.
+#Technical_sampleID (Intercept) 0.1317   0.3629  
+#Residual                       0.1717   0.4144  
+#Number of obs: 514, groups:  Technical_sampleID, 60
+#
+#Fixed effects:
+#  Estimate Std. Error t value Pr(>|z|)    
+#(Intercept)            8.98084    0.12271  73.185   <2e-16 ***
+#time_scaled            0.16188    0.09096   1.780   0.0751 .  
+#TreatmentLongmires RT  0.14061    0.18079   0.778   0.4367    
+#---
+#  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+#
+#Correlation of Fixed Effects:
+#  (Intr) tm_scl
+#time_scaled -0.078       
+#TrtmntLngRT -0.684  0.126
+
+anova(glmm.lm3)
+#Analysis of Variance Table
+#npar  Sum Sq Mean Sq F value
+#time_scaled    1 1.59357 1.59357  9.2785
+#Treatment      1 0.32829 0.32829  1.9114
+
+Anova(glmm.lm3)
+#Analysis of Deviance Table (Type II Wald chisquare tests)
+#
+#Response: qs_conc_adjusted
+#Chisq Df Pr(>Chisq)  
+#time_scaled 3.1671  1    0.07514 .
+#Treatment   0.6049  1    0.43673  
+
 
 
 ## Descriptive Statistics
@@ -947,6 +924,10 @@ legend.plot <- ggboxplot(conc_time2, x="Time_Cont", y="qs_conc_adjusted", col = 
   theme_bw() +
   theme(legend.background = element_blank(),
         legend.position = 'top',
+        legend.direction = 'horizontal',
+        legend.box = 'vertical',
+        legend.box.margin=margin(0,0,-5,0),
+        legend.spacing.y = unit(-10, "pt"),
         legend.title = element_blank(),
         legend.key = element_rect(fill=NA, color = NA),
         panel.grid.major = element_blank(), 
@@ -957,12 +938,15 @@ legend.plot <- ggboxplot(conc_time2, x="Time_Cont", y="qs_conc_adjusted", col = 
         axis.title.x = element_text(size = 11, margin = margin(t = 7, r = 0, b = 0, l = 0)),
         axis.text=element_text(size=10, color = 'black'),
         plot.margin = margin(0.25,0.5,0,0.5, unit="cm"))+
-  stat_summary(fun=mean, geom = "line", size = 0.5, aes(group = Treatment, col = Treatment),
+  stat_summary(fun=mean, geom = "line", size = 0.5, aes(group = Treatment, col = Treatment, linetype = Extraction),
                position = position_dodge(0.8))+
   scale_color_manual(breaks = c("Immediate na", "Ethanol -20", "Ethanol 4", "Frozen -20", "Frozen -80", "Longmires RT", "Longmires 4"),
                      values = c("Immediate na"="#00A5FF", "Ethanol -20"="#F8766D", "Ethanol 4"="#BB9D00", "Frozen -20"="#00Bc59", "Frozen -80"="#00BFC4", "Longmires RT"="#fc61d5", "Longmires 4"="#CF78FF"),
                      labels = c("Immediate", "Ethanol -20", "Ethanol 4", "Frozen -20", "Frozen -80", "Longmires RT", "Longmires 4"))+
-  guides(colour = guide_legend(nrow = 1)) #make legend 1 row
+  guides(nrow = 2, colour = guide_legend(order = 1, nrow = 1), linetype = guide_legend(order = 2)) #make legend 1 row
+
+legend.plot
+
 
 
 #Boxplot for 'Immediate' group only
@@ -1012,7 +996,8 @@ boxplot.I <- ggplot() +
               aes(x = Time_Cont,
                   y = qs_conc_adjusted,
                   color = Treatment,
-                  fill = Treatment),
+                  fill = Treatment,
+                  linetype = Extraction),
               alpha = 0.15,
               method = "glm",
               size=.8,
@@ -1088,6 +1073,8 @@ barplot
 
 #Arrange 2X1
 library(ggpubr)
+install.packages("cowplot")
+library(cowplot)
 
 legend<-ggpubrlegend<-get_legend(legend.plot)
 
@@ -1104,80 +1091,7 @@ ggarrange(ggarrange(boxplot.imm, boxplot.I,
           legend = "top",
           common.legend = TRUE)
 
-ggsave(filename = "Fig4_ExpI_700dpi.png", plot = last_plot(), dpi = 700, bg="white")
-
-#~~~~~~~~~~
-# Removing t=2 for visual effectiveness
-library(tidyverse)
-
-conc_data5 = conc_data4 %>%
-  filter(Time_Cont > 2)
-
-boxplot.I.t2 <- ggplot() +
-  theme_bw() +
-  geom_smooth(data = conc_data5,
-              aes(x = Time_Cont,
-                  y = qs_conc_adjusted,
-                  color = Treatment,
-                  fill = Treatment),
-              alpha = 0.15,
-              method = "glm",
-              size=.8,
-              se = T,
-              fullrange=TRUE) +
-  geom_boxplot(data = conc_data5,
-               aes(x = Time_Cont,
-                   y = qs_conc_adjusted,
-                   group = interaction(Time_Factor, Treatment),
-                   color = Treatment),
-               width = 2.75,
-               outlier.size = .6,
-               position = position_dodge(3.65)) +
-  scale_y_continuous(limits = c(0, 160000), breaks = c(0, 50000, 100000, 150000)) +
-  scale_x_continuous(limits = c(2, 54), breaks = c(4, 8, 17, 26, 35, 43, 52), expand = c(0,0)) +
-  theme(legend.background = element_blank(),
-        legend.position = 'none',
-        legend.title = element_blank(),
-        legend.key = element_rect(fill=NA, color = NA),
-        panel.grid.major.y = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.grid.major.x = element_line(color = "gray",
-                                          size = 0.5,
-                                          linetype = 2),
-        axis.line = element_blank(),
-        panel.background = element_rect(colour = "black", fill=NA, size=0.8),
-        axis.title.y = element_blank(),
-        axis.title.x = element_text(size = 10, hjust = 0.46),
-        axis.text.y=element_blank(),
-        axis.text.x=element_text(size=10, color = 'black'),
-        axis.ticks.x = element_blank(),
-        axis.ticks.y = element_blank(),
-        plot.margin = margin(0.20,0.5,0,0.1, unit="cm")) +
-  xlab("Time Preserved (weeks)")+
-  ylab("eDNA Concentration (pg/mL)") +
-  scale_color_manual(breaks = c("Ethanol -20", "Ethanol 4", "Frozen -20", "Frozen -80", "Longmires RT", "Longmires 4"),
-                     values = c("Ethanol -20"="#F8766D", "Ethanol 4"="#BB9D00", "Frozen -20"="#00Bc59", "Frozen -80"="#00BFC4", "Longmires RT"="#fc61d5", "Longmires 4"="#CF78FF"))+
-  xlab("Time Preserved (weeks)")+
-  guides(colour = guide_legend(nrow = 1)) #make legend 1 row
-
-boxplot.I.t2
-
-
-ggarrange(ggarrange(boxplot.imm, boxplot.I.t2, 
-                    ncol = 2,
-                    widths = c(.65,4)),
-          barplot,
-          nrow = 2,
-          heights = c(1.5,1),
-          labels = c("A", "B"),
-          vjust = -0.5,
-          
-          legend.grob = legend,
-          legend = "top",
-          common.legend = TRUE)
-
-ggsave(filename = "Fig4_ExpI_2_700dpi.png", plot = last_plot(), dpi = 700, bg="white")
-
+ggsave(filename = "Fig4_ExpI_R2_700dpi.png", plot = last_plot(), dpi = 700, bg="white")
 
 
 
@@ -1660,64 +1574,56 @@ lmm_var = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sa
               weights = varIdent(form = ~1|Treatment),
               method = 'ML', 
               na.action = na.omit)
-anova(lmm_var, lmm_presII) #variance structure better
-
-# variance allowed to vary among Treatment groups and among Time groups (Time treated as a factor in this case)
-lmm_var2 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
-               data = edna_conc_presII,
-               weights = varComb (varIdent(form = ~1|Treatment),
-                                  varIdent(form = ~1|Time_Cont)),
-               method = 'ML', 
-               na.action = na.omit)
-anova(lmm_var, lmm_var2) 
+anova(lmm_var, lmm_presII) 
 #Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-#lmm_var      1 13 11480.64 11539.10 -5727.319                        
-#lmm_var2     2 17 11435.02 11511.47 -5700.510 1 vs 2 53.61762  <.0001
+#lmm_var        1 13 11480.64 11539.10 -5727.319                        
+#lmm_presII     2 10 11719.81 11764.78 -5849.907 1 vs 2 245.1752  <.0001
 
-    # 2 variance structures better
+#variance structure better
+
 
 # variance allowed to vary among Treatment groups and with Time
-lmm_var3 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
+lmm_var2 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
                data = edna_conc_presII,
                weights = varComb (varIdent(form = ~1|Treatment),
                                   varFixed(~Time_Cont)),
                method = 'ML', 
                na.action = na.omit)
-anova(lmm_var3, lmm_var2) 
-#Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-#lmm_var3     1 13 11636.97 11695.42 -5805.483                        
-#lmm_var2     2 17 11435.02 11511.47 -5700.510 1 vs 2 209.9453  <.0001
+anova(lmm_var, lmm_var2) 
+#Model df      AIC      BIC    logLik
+#lmm_var      1 13 11480.64 11539.10 -5727.319
+#lmm_var2     2 13 11636.97 11695.42 -5805.483
 
-    # varIdent() for Treatment and Time better
+    # varIdent() for Treatment only is better
 
 # variance allowed to vary for each Treatment group and models variance as a power of Time
-lmm_var4 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
+lmm_var3 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
                data = edna_conc_presII,
                weights = varComb (varIdent(form = ~1|Treatment),
                                   varPower(form = ~Time_Cont)),
                method = 'ML', 
                na.action = na.omit)
-anova(lmm_var4, lmm_var2) 
-#Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-#lmm_var4     1 14 11482.45 11545.41 -5727.227                        
-#lmm_var2     2 17 11435.02 11511.47 -5700.510 1 vs 2 53.43405  <.0001
+anova(lmm_var, lmm_var3) 
+#Model df      AIC      BIC    logLik   Test   L.Ratio p-value
+#lmm_var      1 13 11480.64 11539.10 -5727.319                         
+#lmm_var3     2 14 11482.45 11545.41 -5727.227 1 vs 2 0.1835689  0.6683
 
-    # varIdent() for Treatment and Time better
+    # No statistical difference -- keep simpilier model with varIdent() for Treatment only
 
 
 # variance allowed to vary for each Treatment group and models variance as an exponential structure of Time
-lmm_var5 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
+lmm_var4 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
                data = edna_conc_presII,
                weights = varComb (varIdent(form = ~1|Treatment),
                                   varExp(form = ~Time_Cont)),
                method = 'ML', 
                na.action = na.omit)
-anova(lmm_var5, lmm_var2) 
+anova(lmm_var, lmm_var4) 
 #Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-#lmm_var5     1 14 11481.50 11544.46 -5726.751                        
-#lmm_var2     2 17 11435.02 11511.47 -5700.510 1 vs 2 52.48129  <.0001
+#lmm_var      1 13 11480.64 11539.10 -5727.319                        
+#lmm_var4     2 14 11481.50 11544.46 -5726.751 1 vs 2 1.136331  0.2864
 
-    # varIdent() for Treatment and Time better
+    # No statistical difference -- keep simpilier model with varIdent() for Treatment only
 
 
 
@@ -1726,123 +1632,114 @@ anova(lmm_var5, lmm_var2)
 #1: Existence of variance - do not need to check because it is always true
 #2: Linearity - do not need to check because fixed effects are categorical
 #3: Homogeneity - residuals vs predicted values (Tukey-Anscombe plot)
-plot(lmm_var2) #heteroskedasticity looks alright-- passable
+plot(lmm_var) #heteroskedasticity looks alright-- passable
 #4: Normality of residuals - histogram, qqplot
-hist(residuals(lmm_var2)) #residuals are fairly normally distributed
-qqnorm(residuals(lmm_var2)) #qqplot looks bad - looks like some underdispersion
-qqline(residuals(lmm_var2))
+hist(residuals(lmm_var)) #residuals are fairly normally distributed
+qqnorm(residuals(lmm_var)) #qqplot looks ok but looks like some underdispersion
+qqline(residuals(lmm_var))
 
 
-plot(lmm_var2, resid(., type="p")~fitted(.)|Treatment) #Heteroskedasticity really only bad in Ethanol-PCI
-plot(lmm_var2, resid(., type="p")~fitted(.)|Time_Cont) #Heteroskedasticity pretty good for all times
-plot(lmm_var2, resid(., type="p")~fitted(.)) #heterogeneity pretty good
-plot(lmm_var2, which = c(1), col = edna_conc_presII$Treatment) #colored by treatment -- definitely a pattern with treatments
+plot(lmm_var, resid(., type="p")~fitted(.)|Treatment) #Heteroskedasticity really only bad in Ethanol-PCI
+plot(lmm_var, resid(., type="p")~fitted(.)|Time_Cont) #Heteroskedasticity pretty good for all times
+plot(lmm_var, resid(., type="p")~fitted(.)) #heterogeneity pretty good
 
-qqnorm(lmm_var2, ~resid(., type="normalized")|Treatment) #Errors still have overdispersed tails -- especially for PCI treatments
-qqnorm(lmm_var2, ~resid(.)|Time_Cont)#Errors still have overdispersed tails 
-qqnorm(residuals(lmm_var2)) #all samples
-qqline(residuals(lmm_var2))
+qqnorm(lmm_var, ~resid(., type="normalized")|Treatment) #Errors still have overdispersed tails -- especially for PCI treatments
+qqnorm(lmm_var, ~resid(.)|Time_Cont)#Errors still have overdispersed tails 
+qqnorm(residuals(lmm_var)) #all samples
+qqline(residuals(lmm_var))
 
-plot(lmm_var2, resid(., type="normalized")~fitted(.)) 
-plot(lmm_var2, resid(., type="normalized")~Time_Cont) #no clear variation across time
-plot(lmm_var2, resid(., type="normalized")~Time_Cont|Treatment)#Uses standardized residuals -- only some variation in Ethanol - PCI
+plot(lmm_var, resid(., type="normalized")~fitted(.)) 
+plot(lmm_var, resid(., type="normalized")~Time_Cont) #no clear variation across time
+plot(lmm_var, resid(., type="normalized")~Time_Cont|Treatment)#Uses standardized residuals -- only some variation in Ethanol - PCI
 
-hist(residuals(lmm_var2)) #normally distributed, but long tails on both sides-- still a bit underdispersed but not quite as bad!
+hist(residuals(lmm_var)) #normally distributed, but long tails on both sides-- still a bit underdispersed but not quite as bad!
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-###### BEST MODEL FOR EXPERIMENT 2 - variance structures for treatment and time ####
+###### BEST MODEL FOR EXPERIMENT 2  ####
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-lmm_var2 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
+lmm_var = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
                     data = edna_conc_presII,
-                    weights = varComb (varIdent(form = ~1|Treatment),
-                                       varIdent(form = ~1|Time_Cont)),
+                    weights = varIdent(form = ~1|Treatment),
                     method = 'REML', 
                     na.action = na.omit)
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-summary(lmm_var2)
-##Linear mixed-effects model fit by REML
+summary(lmm_var)
+#Linear mixed-effects model fit by REML
 #Data: edna_conc_presII 
 #AIC      BIC    logLik
-#11346.23 11422.47 -5656.116
+#11391.88 11450.18 -5682.938
 #
 #Random effects:
 #  Formula: ~1 | Technical_sampleID
 #(Intercept) Residual
-#StdDev:    1857.249 1092.043
+#StdDev:    1852.698 761.6775
 #
-#Combination of variance functions: 
+#Variance function:
 #  Structure: Different standard deviations per stratum
 #Formula: ~1 | Treatment 
 #Parameter estimates:
 #  Ethanol Kit    Ethanol PCI Longmire's Kit Longmire's PCI 
-#1.0000000      0.9970981      1.2484139      2.9687474 
-#Structure: Different standard deviations per stratum
-#Formula: ~1 | Time 
-#Parameter estimates:
-#  13        26        39         4        52 
-#1.0000000 0.6061720 0.9641488 0.6104212 0.6371491 
-#Fixed effects:  qs_conc_adjusted ~ Time * Treatment 
-#Value Std.Error  DF   t-value p-value
-#(Intercept)                   4643.250  774.1877 587  5.997577  0.0000
-#Time                            35.524   24.2573  68  1.464472  0.1477
-#TreatmentEthanol PCI         -3304.748 1094.9318  68 -3.018223  0.0036
-#TreatmentLongmire's Kit       4618.745 1098.2327  68  4.205616  0.0001
-#TreatmentLongmire's PCI       1215.725 1147.1059  68  1.059820  0.2930
-#Time:TreatmentEthanol PCI       -3.015   34.3109  68 -0.087882  0.9302
-#Time:TreatmentLongmire's Kit   -58.291   35.5663  68 -1.638929  0.1058
-#Time:TreatmentLongmire's PCI   -95.571   35.7704  68 -2.671785  0.0094
+#1.000000       1.232678       1.428608       3.069430 
+#Fixed effects:  qs_conc_adjusted ~ Time_Cont * Treatment 
+#                                       Value Std.Error  DF   t-value p-value
+#(Intercept)                        4642.507  771.2934 587  6.019119  0.0000
+#Time_Cont                            35.552   24.1837  68  1.470074  0.1462
+#TreatmentEthanol PCI              -3297.175 1093.4610  68 -3.015356  0.0036
+#TreatmentLongmire's Kit            4673.722 1096.2262  68  4.263465  0.0001
+#TreatmentLongmire's PCI            1199.555 1142.5515  68  1.049891  0.2975
+#Time_Cont:TreatmentEthanol PCI       -3.138   34.2883  68 -0.091509  0.9274
+#Time_Cont:TreatmentLongmire's Kit   -59.298   35.5762  68 -1.666777  0.1002
+#Time_Cont:TreatmentLongmire's PCI   -94.809   35.7366  68 -2.652984  0.0099
 #Correlation: 
-#  (Intr) Time   TrEPCI TrtL'K TL'PCI T:TEPC T:TL'K
-#Time                         -0.840                                          
-##TreatmentEthanol PCI         -0.707  0.594                                   
-#TreatmentLongmire's Kit      -0.705  0.592  0.498                            
-#TreatmentLongmire's PCI      -0.675  0.567  0.477  0.476                     
-#Time:TreatmentEthanol PCI     0.594 -0.707 -0.840 -0.419 -0.401              
-#Time:TreatmentLongmire's Kit  0.573 -0.682 -0.405 -0.817 -0.387  0.482       
-#Time:TreatmentLongmire's PCI  0.570 -0.678 -0.403 -0.402 -0.840  0.479  0.463
+#                                  (Intr) Tm_Cnt TrEPCI TrtL'K TL'PCI T_C:TEP T_C:TK
+#Time_Cont                         -0.840                                           
+#TreatmentEthanol PCI              -0.705  0.593                                    
+#TreatmentLongmire's Kit           -0.704  0.591  0.496                             
+#TreatmentLongmire's PCI           -0.675  0.567  0.476  0.475                      
+#Time_Cont:TreatmentEthanol PCI     0.593 -0.705 -0.840 -0.417 -0.400               
+#Time_Cont:TreatmentLongmire's Kit  0.571 -0.680 -0.403 -0.816 -0.386  0.479        
+#Time_Cont:TreatmentLongmire's PCI  0.569 -0.677 -0.401 -0.400 -0.842  0.477   0.460
 #
 #Standardized Within-Group Residuals:
-#        Min          Q1         Med          Q3         Max 
-#-2.85581820 -0.49441618 -0.06425245  0.46593083  4.75913447 
+#  Min         Q1        Med         Q3        Max 
+#-3.6250205 -0.4948034 -0.0581462  0.4595668  5.5021538 
 #
 #Number of Observations: 663
 #Number of Groups: 76 
 
 
 library(car)
-Anova(lmm_var2)
+Anova(lmm_var)
 #Analysis of Deviance Table (Type II tests)
 #
 #Response: qs_conc_adjusted
 #Chisq Df Pr(>Chisq)    
-#Time             0.0039  1    0.95032    
-#Treatment      110.5080  3    < 2e-16 ***
-#  Time:Treatment   9.9189  3    0.01927 *
+#Time_Cont             0.0037  1    0.95155    
+#Treatment           111.4066  3    < 2e-16 ***
+#Time_Cont:Treatment   9.8363  3    0.02001 * 
 
 
 
 
 #compare without interaction (use method = 'ML' to compare models)
-lmm_var2 = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
+lmm_var = lme(qs_conc_adjusted ~ Time_Cont * Treatment, random = ~1|Technical_sampleID,
                data = edna_conc_presII,
-               weights = varComb (varIdent(form = ~1|Treatment),
-                                  varIdent(form = ~1|Time_Cont)),
+               weights = varIdent(form = ~1|Treatment),
                method = 'ML', 
                na.action = na.omit)
 
-lmm_var2.noint = lme(qs_conc_adjusted ~ Time_Cont + Treatment, random = ~1|Technical_sampleID,
+lmm_var.noint = lme(qs_conc_adjusted ~ Time_Cont + Treatment, random = ~1|Technical_sampleID,
                           data = edna_conc_presII,
-                          weights = varComb (varIdent(form = ~1|Treatment),
-                                             varIdent(form = ~1|Time_Cont)),
+                          weights = varIdent(form = ~1|Treatment),
                           method = 'ML', 
                           na.action = na.omit)
 
-anova(lmm_var2, lmm_var2.noint)
+anova(lmm_var, lmm_var.noint)
 #Model df      AIC      BIC   logLik   Test  L.Ratio p-value
-#lmm_var2           1 17 11435.02 11511.47 -5700.51                        
-#lmm_var2.noint     2 14 11439.38 11502.33 -5705.69 1 vs 2 10.35908  0.0157
+#lmm_var           1 13 11480.64 11539.10 -5727.319                        
+#lmm_var.noint     2 10 11484.92 11529.88 -5732.458 1 vs 2 10.27702  0.0164
 
 ## AIC is slightly better for interaction model; BIC is slightly better for no interaction model; log-likelihood slightly better for interaction model and there is a sig difference
 
@@ -1853,25 +1750,25 @@ anova(lmm_var2, lmm_var2.noint)
 #post hoc pairwise comparisons for slopes
 library('emmeans')
 
-emtrends(lmm_var2, pairwise ~ Treatment, var = "Time_Cont")
+emtrends(lmm_var, pairwise ~ Treatment, var = "Time_Cont") # use REML method
 #$emtrends
 #Treatment      Time_Cont.trend   SE df lower.CL upper.CL
-#Ethanol Kit               35.5 23.0 68    -10.4     81.4
-#Ethanol PCI               32.5 23.0 68    -13.4     78.4
-#Longmire's Kit           -22.6 24.7 68    -71.9     26.6
-#Longmire's PCI           -60.3 25.1 68   -110.5    -10.1
+#Ethanol Kit               35.6 24.2 68    -12.7    83.81
+#Ethanol PCI               32.4 24.3 68    -16.1    80.92
+#Longmire's Kit           -23.7 26.1 68    -75.8    28.32
+#Longmire's PCI           -59.3 26.3 68   -111.8    -6.75
 #
 #Degrees-of-freedom method: containment 
 #Confidence level used: 0.95 
 #
 #$contrasts
 #contrast                        estimate   SE df t.ratio p.value
-#Ethanol Kit - Ethanol PCI           3.01 32.5 68   0.093  0.9997
-#Ethanol Kit - Longmire's Kit       58.16 33.7 68   1.725  0.3191
-#Ethanol Kit - Longmire's PCI       95.79 34.1 68   2.811  0.0319
-#Ethanol PCI - Longmire's Kit       55.15 33.7 68   1.635  0.3662
-#Ethanol PCI - Longmire's PCI       92.78 34.1 68   2.722  0.0401
-#Longmire's Kit - Longmire's PCI    37.63 35.2 68   1.068  0.7099
+#Ethanol Kit - Ethanol PCI           3.14 34.3 68   0.092  0.9997
+#Ethanol Kit - Longmire's Kit       59.30 35.6 68   1.667  0.3491
+#Ethanol Kit - Longmire's PCI       94.81 35.7 68   2.653  0.0477
+#Ethanol PCI - Longmire's Kit       56.16 35.7 68   1.575  0.3997
+#Ethanol PCI - Longmire's PCI       91.67 35.8 68   2.559  0.0599
+#Longmire's Kit - Longmire's PCI    35.51 37.1 68   0.958  0.7734
 #
 #Degrees-of-freedom method: containment 
 #P value adjustment: tukey method for comparing a family of 4 estimates 
